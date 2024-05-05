@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 
 function useJobData() {
     const [jobData, setJobData] = useState([]); //creating a state to store data from api call
-    const [isLoading, setIsLoading] = useState(true); 
+    const [isLoading, setIsLoading] = useState(true); // indicating the loader state while api promises is being resolved
+    const [page, setPage] = useState(0) //offset to pass during api call
+    console.log(page, 'jd')
     console.log(jobData)
 
+    //function to call api
     const fetchData = async () => {
         try {
             setIsLoading(true);
@@ -13,7 +16,7 @@ function useJobData() {
     
           const body = JSON.stringify({
             limit: 9,
-            offset: 0
+            offset: page
           });
     
           const requestOptions = {
@@ -27,7 +30,10 @@ function useJobData() {
           );
           const result = await response.json();
           setIsLoading(false);
-          return result.jdList; //   array from the response
+        
+        const jobArray = result.jdList
+        console.log('data set')
+        setJobData((prev)=> [...prev, ...jobArray]); // destructuring the current array and adding with result array 
         } catch (error) {
           console.error(error);
           setIsLoading(false);
@@ -35,15 +41,29 @@ function useJobData() {
         }
       };
 
+     
+
     useEffect(() => {
-        
-        const fetchDataAndUpdateState = async () => {
-          const result = await fetchData();  //calling api to get the data
-          setJobData(result);
-        };
-    
-        fetchDataAndUpdateState();
-      }, []);
+        fetchData() // calling the api call function
+      }, [page]);
+
+      //infinite scroll feature
+      const handleInfiniteScroll =() =>{
+        // If this condition is true, it means that the user has scrolled to the bottom 
+        // of the page (or very close to it), and in response, it updates the page state by incrementing it by 1, 
+        try {
+            if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight){
+                setPage((prev)=>prev+1)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+      }
+
+      useEffect(()=>{
+        window.addEventListener('scroll', handleInfiniteScroll) 
+        return () =>window.removeEventListener('scroll', handleInfiniteScroll)  // clean up function to clear last event listener 
+      },[])
 
 
     return {jobData, isLoading}
