@@ -10,4 +10,4 @@ process:
   as of the time (13: 03 PM) redux commit, i have created only single slice only for alljobs, Will create filter slice later on, Then i will update the readme with mentioning the time.
 
  3)  added infinite scroll feature
- 
+  4) installed Material UI and created Job Card

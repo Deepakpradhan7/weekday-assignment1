@@ -29,11 +29,12 @@ function useJobData() {
             requestOptions
           );
           const result = await response.json();
-          setIsLoading(false);
+         
         
         const jobArray = result.jdList
         console.log('data set')
         setJobData((prev)=> [...prev, ...jobArray]); // destructuring the current array and adding with result array 
+        setIsLoading(false);
         } catch (error) {
           console.error(error);
           setIsLoading(false);
@@ -53,6 +54,7 @@ function useJobData() {
         // of the page (or very close to it), and in response, it updates the page state by incrementing it by 1, 
         try {
             if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight){
+              setIsLoading(true);
                 setPage((prev)=>prev+1)
             }
         } catch (error) {

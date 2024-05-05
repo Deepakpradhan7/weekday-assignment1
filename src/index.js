@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store ,persistor} from './store';
+import '@fontsource/roboto/500.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
