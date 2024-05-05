@@ -12,3 +12,5 @@ process:
   4) installed Material UI and created Job Card
 
   5) created slice and reducers for all filter 
+
+  6) created a slice for filterJobs 

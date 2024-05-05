@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedCompany, setSelectedExp, setSelectedSalary, setSelectedJobRoles, setSelectedLocations } from '../../store/filterSlice';
 //importing constants for filters
@@ -7,6 +7,7 @@ import { salaryOptions, locationOptions, locationLabels, jobRoleOptions, jobRole
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
+import { setFilterJobs } from '../../store/filterJobsSlice';
 
 
 
@@ -20,54 +21,60 @@ const FilterComponent = () => {
     const selectedLocations = useSelector((state) => state.filter.selectedLocations) || []
     const selectedCompany = useSelector((state) => state.filter.selectedCompany)
 
+
+    useEffect(()=>{
+        const applyAllFilter = (jobs) => {
+            let filteredJobs = jobs;
+    
+            // Filter by experience
+            if (selectedExp) {
+                filteredJobs = filteredJobs.filter(
+                    (job) => job.minExp && job.maxExp && selectedExp >= job.minExp && selectedExp <= job.maxExp
+                );
+            }
+    
+            // Filter by salary range
+            if (selectedSalary) {
+                filteredJobs = filteredJobs.filter(
+                    (job) => job.maxJdSalary && selectedSalary <= job.maxJdSalary
+                );
+            }
+            // filter by company name
+            if (selectedCompany) {
+                const searchTerm = selectedCompany.toLowerCase();
+                filteredJobs = filteredJobs.filter(
+                    (job) => job.companyName.toLowerCase().includes(searchTerm)
+                );
+            }
+    
+            // Filter by location
+            if (selectedLocations.length > 0) {
+                filteredJobs = filteredJobs.filter((job) =>
+                    selectedLocations.some((location) =>
+                        location === "remote" ? job.location === "remote" : job.location !== "remote"
+                    )
+                );
+            }
+    
+            //filter by job roles
+            if (selectedJobRoles.length > 0) {
+                filteredJobs = filteredJobs.filter(
+                    (job) => selectedJobRoles.includes(job.jobRole)
+                );
+            }
+            return filteredJobs;
+        };
+        const filteredJobs = applyAllFilter(jobs); //filtering all jobs
+    dispatch(setFilterJobs(filteredJobs)) // dispatching filter jobs 
+    }, [jobs, selectedExp, selectedJobRoles, selectedSalary, selectedLocations, selectedCompany]) //passing dependency so that the useEffect will rerender the component whenever a state changes
     //apply filter function starts
-    const applyAllFilter = (jobs) => {
-        let filteredJobs = jobs;
-
-        // Filter by experience
-        if (selectedExp) {
-            filteredJobs = filteredJobs.filter(
-                (job) => job.minExp && job.maxExp && selectedExp >= job.minExp && selectedExp <= job.maxExp
-            );
-        }
-
-        // Filter by salary range
-        if (selectedSalary) {
-            filteredJobs = filteredJobs.filter(
-                (job) => job.maxJdSalary && selectedSalary <= job.maxJdSalary
-            );
-        }
-        // filter by company name
-        if (selectedCompany) {
-            const searchTerm = selectedCompany.toLowerCase();
-            filteredJobs = filteredJobs.filter(
-                (job) => job.companyName.toLowerCase().includes(searchTerm)
-            );
-        }
-
-        // Filter by location
-        if (selectedLocations.length > 0) {
-            filteredJobs = filteredJobs.filter((job) =>
-                selectedLocations.some((location) =>
-                    location === "remote" ? job.location === "remote" : job.location !== "remote"
-                )
-            );
-        }
-
-        //filter by job roles
-        if (selectedJobRoles.length > 0) {
-            filteredJobs = filteredJobs.filter(
-                (job) => selectedJobRoles.includes(job.jobRole)
-            );
-        }
-        return filteredJobs;
-    };
+   
     //apply filter function ends
 
 
-    //All input handlers start
+    //All input handlers start (dispatching values)
     const handleExperienceChange = (event, value) => {
-        dispatch(setSelectedExp(parseInt(value)));
+        dispatch(setSelectedExp(parseInt(value))); 
     };
 
     const handleSalaryChange = (event, value) => {
@@ -87,7 +94,7 @@ const FilterComponent = () => {
     };
     //All input handlers start
 
-    const filteredJobs = applyAllFilter(jobs); //filtering all jobs
+    
     return (
         <div>
             <Stack style={{ marginTop: '20px', marginBottom: "20px", marginLeft: "20px" }} spacing={2} sx={{ width: 500 }}>

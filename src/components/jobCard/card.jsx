@@ -17,8 +17,8 @@ const CardComponent = () => {
     const handleModalOpen = () => setOpen(true);
     const handleModalClose = () => setOpen(false);
 
-
-    const jobDetails = useSelector((state) => state.jobs.allJobs) // getting job Data from redux
+    const filterJobs = useSelector((state)=>state.filterJobs.filterJobs) // getting filter jobs
+    console.log(filterJobs)
     const loading = useSelector((state) => state.jobs.loading) //getting loading status from redux
 
     let jobFullDescription; // jobDescription to pass to the modal 
@@ -27,7 +27,7 @@ const CardComponent = () => {
         < Container maxWidth='lg' >
             <FilterComponent/>
             <Grid container spacing={5} style={{ marginTop: "20px",  }}>
-                {jobDetails.map((job, index) => {
+                {filterJobs.map((job, index) => {
                     let description = job.jobDetailsFromCompany
                     jobFullDescription = job.jobDetailsFromCompany
                     if (!showFullDesc) {
