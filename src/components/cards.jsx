@@ -35,7 +35,7 @@ const CardComponent = () => {
         return <NoContent/>
     }
     return (
-        <  >
+        <div style={{minHeight: '90vh'}}  >
             <Grid container spacing={5} style={{ marginTop: "5px",  }}>
                 {filterJobs.map((job, index) => {
                     let description = job.jobDetailsFromCompany
@@ -110,7 +110,7 @@ const CardComponent = () => {
             {/* passing props to jobDetailsModal */}
             <JobDetailsModal jobFullDescription={jobFullDescription} open={open} handleModalClose={handleModalClose}/>
           
-        </>
+        </div>
     )
 }
 

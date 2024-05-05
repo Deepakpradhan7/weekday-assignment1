@@ -15,7 +15,7 @@ function useJobData() {
           myHeaders.append("Content-Type", "application/json");
     
           const body = JSON.stringify({
-            limit: 9,
+            limit: 3,
             offset: page
           });
     

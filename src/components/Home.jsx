@@ -20,7 +20,7 @@ const Home = () => {
       </div>
       <Container maxWidth='lg'>
       <Card/>
-      </Container>
+    </Container>
     </>
   )
 }
