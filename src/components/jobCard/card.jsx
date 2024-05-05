@@ -8,6 +8,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 
 import JobDetailsModal from './jobDetailsModal';
+import FilterComponent from './filterComponent';
 
 const CardComponent = () => {
     const [open, setOpen] = React.useState(false); // for handling modal 
@@ -24,7 +25,7 @@ const CardComponent = () => {
 
     return (
         < Container maxWidth='lg' >
-            
+            <FilterComponent/>
             <Grid container spacing={5} style={{ marginTop: "20px",  }}>
                 {jobDetails.map((job, index) => {
                     let description = job.jobDetailsFromCompany
