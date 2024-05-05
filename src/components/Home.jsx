@@ -13,10 +13,15 @@ const Home = () => {
     dispatch(setLoading(isLoading))
     console.log(jobData, isLoading)
     return (
-    <Container maxWidth='lg'>
-      <FilterComponent/>
+      <>
+      {/* OPTIONAL !! i made the filter bar sticky so that it would be easier to control job search */}
+      <div style={{ position: 'sticky', top: 0, zIndex: 1 , backgroundColor:'white', paddingBottom: '5px', paddingTop: '5px', display:'flex', justifyContent:'center',alignItems:' center'  }}>
+      <FilterComponent />
+      </div>
+      <Container maxWidth='lg'>
       <Card/>
-    </Container>
+      </Container>
+    </>
   )
 }
 

@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Grid, Card, CardContent, Typography, CardActions, CircularProgress } from '@mui/material'
-import Container from '@mui/material/Container';
+import { Grid, Card, CardContent, Typography, CardActions,  } from '@mui/material'
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 
-
+import NoContent from './noContent';
 import JobDetailsModal from './jobDetailsModal';
-import FilterComponent from './filterComponent';
+import Loader from './loader';
 
 const CardComponent = () => {
     const [open, setOpen] = React.useState(false); // for handling modal 
@@ -25,15 +24,19 @@ const CardComponent = () => {
     let jobFullDescription; // jobDescription to pass to the modal 
     console.log(filterJobs, 'filterJobs')
     
-    if (loading) {
-        <CircularProgress/>
+    if (loading && filterJobs.length === 0) {
+        return(
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: "center", height: '90vh'}}>
+                <Loader/>
+            </div>
+        ) 
+    }
+    if (filterJobs.length === 0){
+        return <NoContent/>
     }
     return (
         <  >
-            {/* {filterJobs.length === 0 ?
-            <img src='/no-content.png' alt='no-content' />: ''
-            } */}
-            <Grid container spacing={5} style={{ marginTop: "20px",  }}>
+            <Grid container spacing={5} style={{ marginTop: "5px",  }}>
                 {filterJobs.map((job, index) => {
                     let description = job.jobDetailsFromCompany
                     jobFullDescription = job.jobDetailsFromCompany
@@ -67,7 +70,7 @@ const CardComponent = () => {
                                     }
                                 />
                                 <Typography color="textSecondary" sx={{ fontWeight: 'light' }} style={{ marginLeft: '15px' }} >
-                                    Estimated Salary: {job?.minJdSalary && `${job?.minJdSalary} -`} {job?.maxJdSalary} LPA
+                                    Estimated Salary: {job?.minJdSalary && `${job?.minJdSalary} -`} {job?.maxJdSalary} LPA  ✅
                                 </Typography>
                                 <>
                                     <CardContent align='left'>
@@ -77,20 +80,20 @@ const CardComponent = () => {
                                         <Typography variant="body2" color="text.secondary">
                                             {description}
                                         </Typography>
-                                        <Typography align='center' style={{ cursor: 'pointer', margin: '5px' }} onClick={handleModalOpen} variant="body2" color="text.secondary">
+                                        <Typography  align='center' style={{color: '#651fff',  cursor: 'pointer', margin: '5px' }} onClick={handleModalOpen} variant="body2" color="text.secondary">
                                             {showFullDesc ? " " : 'View Details'}
                                         </Typography>
 
                                     </CardContent>
                                 </>
-                                <Typography color="textSecondary" sx={{ fontWeight: 'light', marginLeft: '15px' }}>
+                                <Typography  color="textSecondary" sx={{ fontWeight: 'light', marginLeft: '15px' }}>
                                     {job.minExp ? `Minimum Experience ${job.minExp}` : '\u00A0'}
                                 </Typography>
 
                                 <CardActions>
                                     <Grid container direction="column" spacing={1}>
                                         <Grid item>
-                                            <Button sx={{ textTransform: "none" }} style={{ backgroundColor: '#55efc4', color: 'black' }} fullWidth variant="contained">Easy Apply</Button>
+                                            <Button sx={{ textTransform: "none" }} style={{ backgroundColor: '#55efc4', color: 'black' }} fullWidth variant="contained"> ⚡ Easy Apply</Button>
                                         </Grid>
                                         <Grid item>
                                             <Button sx={{ textTransform: "none" }} style={{ backgroundColor: '#651fff' }} fullWidth variant="contained">Unlock referral asks</Button>
@@ -103,6 +106,7 @@ const CardComponent = () => {
                     )
                 })}
             </Grid>
+            {loading && <Loader />} 
             {/* passing props to jobDetailsModal */}
             <JobDetailsModal jobFullDescription={jobFullDescription} open={open} handleModalClose={handleModalClose}/>
           

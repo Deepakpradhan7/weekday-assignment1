@@ -7,7 +7,7 @@ function useJobData() {
     console.log(page, 'jd')
     console.log(jobData)
 
-    //function to call api
+    //function call for api
     const fetchData = async () => {
         try {
             setIsLoading(true);

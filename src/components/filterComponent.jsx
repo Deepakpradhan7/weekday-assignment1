@@ -100,7 +100,7 @@ const FilterComponent = () => {
     //All input handlers start
     
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '80%',  }}>
             <Stack useFlexGap flexWrap="wrap" direction='row' style={{ marginTop: '20px', marginBottom: "15px", }} spacing={2} >
                 <Autocomplete
                     size='small'
