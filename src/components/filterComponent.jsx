@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedCompany, setSelectedExp, setSelectedSalary, setSelectedJobRoles, setSelectedLocations } from '../../store/filterSlice';
+import { setSelectedCompany, setSelectedExp, setSelectedSalary, setSelectedJobRoles, setSelectedLocations } from '../store/filterSlice';
 //importing constants for filters
-import { salaryOptions, locationOptions, locationLabels, jobRoleOptions, jobRoleLabels } from '../../constants/constantData';
+import { salaryOptions, locationOptions, locationLabels, jobRoleOptions, jobRoleLabels } from '../constants/constantData';
 
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import { setFilterJobs } from '../../store/filterJobsSlice';
+import Box from '@mui/material/Box';
+import { setFilterJobs } from '../store/filterJobs';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -21,18 +23,21 @@ const FilterComponent = () => {
     const selectedLocations = useSelector((state) => state.filter.selectedLocations) || []
     const selectedCompany = useSelector((state) => state.filter.selectedCompany)
 
+    const loading = useSelector((state) => state.jobs.loading) //getting loading status from redux
+    
 
-    useEffect(()=>{
+
+    useEffect(() => {
         const applyAllFilter = (jobs) => {
             let filteredJobs = jobs;
-    
+
             // Filter by experience
             if (selectedExp) {
                 filteredJobs = filteredJobs.filter(
                     (job) => job.minExp && job.maxExp && selectedExp >= job.minExp && selectedExp <= job.maxExp
                 );
             }
-    
+
             // Filter by salary range
             if (selectedSalary) {
                 filteredJobs = filteredJobs.filter(
@@ -46,7 +51,7 @@ const FilterComponent = () => {
                     (job) => job.companyName.toLowerCase().includes(searchTerm)
                 );
             }
-    
+
             // Filter by location
             if (selectedLocations.length > 0) {
                 filteredJobs = filteredJobs.filter((job) =>
@@ -55,7 +60,7 @@ const FilterComponent = () => {
                     )
                 );
             }
-    
+
             //filter by job roles
             if (selectedJobRoles.length > 0) {
                 filteredJobs = filteredJobs.filter(
@@ -65,16 +70,16 @@ const FilterComponent = () => {
             return filteredJobs;
         };
         const filteredJobs = applyAllFilter(jobs); //filtering all jobs
-    dispatch(setFilterJobs(filteredJobs)) // dispatching filter jobs 
+        dispatch(setFilterJobs(filteredJobs)) // dispatching filter jobs 
     }, [jobs, selectedExp, selectedJobRoles, selectedSalary, selectedLocations, selectedCompany]) //passing dependency so that the useEffect will rerender the component whenever a state changes
     //apply filter function starts
-   
+
     //apply filter function ends
 
 
     //All input handlers start (dispatching values)
     const handleExperienceChange = (event, value) => {
-        dispatch(setSelectedExp(parseInt(value))); 
+        dispatch(setSelectedExp(parseInt(value)));
     };
 
     const handleSalaryChange = (event, value) => {
@@ -93,58 +98,13 @@ const FilterComponent = () => {
         dispatch(setSelectedJobRoles(value));
     };
     //All input handlers start
-
     
     return (
-        <div>
-            <Stack style={{ marginTop: '20px', marginBottom: "20px", marginLeft: "20px" }} spacing={2} sx={{ width: 500 }}>
+        <Box sx={{ width: '100%' }}>
+            <Stack useFlexGap flexWrap="wrap" direction='row' style={{ marginTop: '20px', marginBottom: "15px", }} spacing={2} >
                 <Autocomplete
-                    id="tags-outlined"
-                    value={selectedExp}
-                    options={Array.from({ length: 11 }, (_, index) => index)}
-                    getOptionLabel={(option) => option.toString()}
-                    filterSelectedOptions
-                    onChange={handleExperienceChange}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            placeholder="Exp"
-                        />
-                    )}
-                />
-                <Autocomplete
-                    id="tags-outlined"
-                    value={selectedSalary}
-                    options={salaryOptions.map(option => `${option}L`)}
-                    getOptionLabel={(option) => option.toString()}
-                    filterSelectedOptions
-                    onChange={handleSalaryChange}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            placeholder="Salary"
-                        />
-                    )}
-                />
-                <TextField value={selectedCompany}
-                    onChange={handleCompanyChange} id="outlined-basic" placeholder="Company Name" variant="outlined" sx={{ width: 500 }} />
-                <Autocomplete
-                    multiple
-                    id="tags-outlined"
-                    value={selectedLocations}
-                    options={locationOptions}
-                    getOptionLabel={(option) => locationLabels[option]}
-                    filterSelectedOptions
-                    onChange={handleLocationChange}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            placeholder="Location"
-                        />
-                    )}
-                />
-
-                <Autocomplete
+                    size='small'
+                    sx={{ flexGrow: 1 }}
                     multiple
                     id="tags-outlined"
                     value={selectedJobRoles}
@@ -159,8 +119,62 @@ const FilterComponent = () => {
                         />
                     )}
                 />
+                <Autocomplete
+                    size='small'
+                    sx={{ flexGrow: 1 }}
+                    id="tags-outlined"
+                    value={selectedExp}
+                    options={Array.from({ length: 11 }, (_, index) => index)}
+                    getOptionLabel={(option) => option.toString()}
+                    filterSelectedOptions
+                    onChange={handleExperienceChange}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            placeholder="Experience"
+                        />
+                    )}
+                />
+                <Autocomplete
+                    size='small'
+                    sx={{ flexGrow: 1 }}
+                    multiple
+                    id="tags-outlined"
+                    value={selectedLocations}
+                    options={locationOptions}
+                    getOptionLabel={(option) => locationLabels[option]}
+                    filterSelectedOptions
+                    onChange={handleLocationChange}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            placeholder="Location"
+                        />
+                    )}
+                />
+                <Autocomplete
+                    size='small'
+                    sx={{ flexGrow: 1 }}
+                    id="tags-outlined"
+                    value={selectedSalary}
+                    options={salaryOptions.map(option => `${option}L`)}
+                    getOptionLabel={(option) => option.toString()}
+                    filterSelectedOptions
+                    onChange={handleSalaryChange}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            placeholder="Salary"
+                        />
+                    )}
+                />
+                <TextField size='small' value={selectedCompany} sx={{ flexGrow: 1 }}
+                    onChange={handleCompanyChange} id="outlined-basic" placeholder="Company Name" variant="outlined" />
+
+
+
             </Stack>
-        </div>
+        </Box>
     )
 }
 

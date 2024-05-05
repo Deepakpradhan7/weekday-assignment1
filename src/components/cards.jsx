@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Grid, Card, CardContent, Typography, CardActions } from '@mui/material'
+import { Grid, Card, CardContent, Typography, CardActions, CircularProgress } from '@mui/material'
 import Container from '@mui/material/Container';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
+
 
 import JobDetailsModal from './jobDetailsModal';
 import FilterComponent from './filterComponent';
@@ -18,14 +19,20 @@ const CardComponent = () => {
     const handleModalClose = () => setOpen(false);
 
     const filterJobs = useSelector((state)=>state.filterJobs.filterJobs) // getting filter jobs
-    console.log(filterJobs)
     const loading = useSelector((state) => state.jobs.loading) //getting loading status from redux
+    console.log(loading)
 
     let jobFullDescription; // jobDescription to pass to the modal 
-
+    console.log(filterJobs, 'filterJobs')
+    
+    if (loading) {
+        <CircularProgress/>
+    }
     return (
-        < Container maxWidth='lg' >
-            <FilterComponent/>
+        <  >
+            {/* {filterJobs.length === 0 ?
+            <img src='/no-content.png' alt='no-content' />: ''
+            } */}
             <Grid container spacing={5} style={{ marginTop: "20px",  }}>
                 {filterJobs.map((job, index) => {
                     let description = job.jobDetailsFromCompany
@@ -99,7 +106,7 @@ const CardComponent = () => {
             {/* passing props to jobDetailsModal */}
             <JobDetailsModal jobFullDescription={jobFullDescription} open={open} handleModalClose={handleModalClose}/>
           
-        </Container>
+        </>
     )
 }
 
