@@ -55,7 +55,7 @@ function useJobData() {
         try {
             if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight){
               setIsLoading(true);
-                setPage((prev)=>prev+1)
+                setPage((prev)=>prev+9)
             }
         } catch (error) {
             console.log(error)
