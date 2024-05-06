@@ -9,13 +9,11 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { setFilterJobs } from '../store/filterJobs';
-import { CircularProgress } from '@mui/material';
-
 
 
 const FilterComponent = () => {
     const dispatch = useDispatch();
-    //get tall jobs from redux
+    //get alljobs and data from redux
     const jobs = useSelector((state) => state.jobs.allJobs);
     const selectedExp = useSelector((state) => state.filter.selectedExp) || null
     const selectedJobRoles = useSelector((state) => state.filter.selectedJobRoles)
@@ -23,15 +21,15 @@ const FilterComponent = () => {
     const selectedLocations = useSelector((state) => state.filter.selectedLocations) || []
     const selectedCompany = useSelector((state) => state.filter.selectedCompany)
 
-    const loading = useSelector((state) => state.jobs.loading) //getting loading status from redux
-    
 
-
+    //apply filter function starts
     useEffect(() => {
         const applyAllFilter = (jobs) => {
             let filteredJobs = jobs;
 
             // Filter by experience
+            //logic - first checking if minimum exp and maximum exp present in the job object, if present than
+            // selected exp should be greater than and equal to min experience and less than or equal to max exp 
             if (selectedExp) {
                 filteredJobs = filteredJobs.filter(
                     (job) => job.minExp && job.maxExp && selectedExp >= job.minExp && selectedExp <= job.maxExp
@@ -39,12 +37,17 @@ const FilterComponent = () => {
             }
 
             // Filter by salary range
+            //logic- checking max salary present or not
+            // selected salary should be less than or equal to max salary  
             if (selectedSalary) {
                 filteredJobs = filteredJobs.filter(
                     (job) => job.maxJdSalary && selectedSalary <= job.maxJdSalary
+
                 );
             }
+
             // filter by company name
+            //logic- the search name letter should be there in company name from the job object
             if (selectedCompany) {
                 const searchTerm = selectedCompany.toLowerCase();
                 filteredJobs = filteredJobs.filter(
@@ -53,6 +56,8 @@ const FilterComponent = () => {
             }
 
             // Filter by location
+            //logic - checking whether the job's location matches any of the selected locations. If "remote" is selected, 
+            // it only considers jobs with a location of "remote". If other locations are selected, it considers jobs with a location other than "remote".
             if (selectedLocations.length > 0) {
                 filteredJobs = filteredJobs.filter((job) =>
                     selectedLocations.some((location) =>
@@ -62,6 +67,7 @@ const FilterComponent = () => {
             }
 
             //filter by job roles
+            //logic- checking the selected job role is there in the job object or not
             if (selectedJobRoles.length > 0) {
                 filteredJobs = filteredJobs.filter(
                     (job) => selectedJobRoles.includes(job.jobRole)
@@ -72,12 +78,10 @@ const FilterComponent = () => {
         const filteredJobs = applyAllFilter(jobs); //filtering all jobs
         dispatch(setFilterJobs(filteredJobs)) // dispatching filter jobs 
     }, [jobs, selectedExp, selectedJobRoles, selectedSalary, selectedLocations, selectedCompany]) //passing dependency so that the useEffect will rerender the component whenever a state changes
-    //apply filter function starts
-
     //apply filter function ends
 
 
-    //All input handlers start (dispatching values)
+    //All input handlers  (dispatching values)
     const handleExperienceChange = (event, value) => {
         dispatch(setSelectedExp(parseInt(value)));
     };
@@ -97,10 +101,10 @@ const FilterComponent = () => {
     const handleJobRoleChange = (event, value) => {
         dispatch(setSelectedJobRoles(value));
     };
-    //All input handlers start
-    
+    //All input handlers end
+
     return (
-        <Box sx={{ width: '80%',  }}>
+        <Box sx={{ width: '80%', }}>
             <Stack useFlexGap flexWrap="wrap" direction='row' style={{ marginTop: '20px', marginBottom: "15px", }} spacing={2} >
                 <Autocomplete
                     size='small'
@@ -154,7 +158,7 @@ const FilterComponent = () => {
                 />
                 <Autocomplete
                     size='small'
-                    sx={{ flexGrow: 1 }}
+                    sx={{ flexGrow: 2 }}
                     id="tags-outlined"
                     value={selectedSalary}
                     options={salaryOptions.map(option => `${option}L`)}
@@ -164,15 +168,12 @@ const FilterComponent = () => {
                     renderInput={(params) => (
                         <TextField
                             {...params}
-                            placeholder="Salary"
+                            placeholder="Minimum Base Pay Salary"
                         />
                     )}
                 />
                 <TextField size='small' value={selectedCompany} sx={{ flexGrow: 1 }}
                     onChange={handleCompanyChange} id="outlined-basic" placeholder="Company Name" variant="outlined" />
-
-
-
             </Stack>
         </Box>
     )

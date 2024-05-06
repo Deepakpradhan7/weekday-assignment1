@@ -15,7 +15,7 @@ function useJobData() {
           myHeaders.append("Content-Type", "application/json");
     
           const body = JSON.stringify({
-            limit: 3,
+            limit: 9,
             offset: page
           });
     
@@ -48,14 +48,14 @@ function useJobData() {
         fetchData() // calling the api call function
       }, [page]);
 
-      //infinite scroll feature
+      //infinite scroll feature ( subsequent API call)
       const handleInfiniteScroll =() =>{
         // If this condition is true, it means that the user has scrolled to the bottom 
-        // of the page (or very close to it), and in response, it updates the page state by incrementing it by 1, 
+        // of the page (or very close to it), and in response, it updates the page state by incrementing it by offset, 
         try {
             if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight){
               setIsLoading(true);
-                setPage((prev)=>prev+9)
+                setPage((prev)=>prev+9) //changing the offset when user reaches the bottom
             }
         } catch (error) {
             console.log(error)

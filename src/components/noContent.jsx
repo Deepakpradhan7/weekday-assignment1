@@ -1,9 +1,9 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-
 import Container from '@mui/material/Container';
 import CardMedia from '@mui/material/CardMedia';
-import { Card, Typography } from '@mui/material';
+import {  Typography } from '@mui/material';
+
 const NoContent = () => {
     const noContentImage = '/no-content.jpg'
     return (

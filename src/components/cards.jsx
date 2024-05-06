@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
-import { Grid, Card, CardContent, Typography, CardActions,  } from '@mui/material'
+import { Grid, Card, CardContent, Typography, CardActions, } from '@mui/material'
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import CardHeader from '@mui/material/CardHeader';
@@ -17,26 +17,31 @@ const CardComponent = () => {
     const handleModalOpen = () => setOpen(true);
     const handleModalClose = () => setOpen(false);
 
-    const filterJobs = useSelector((state)=>state.filterJobs.filterJobs) // getting filter jobs
+    const filterJobs = useSelector((state) => state.filterJobs.filterJobs) // getting filter jobs
     const loading = useSelector((state) => state.jobs.loading) //getting loading status from redux
     console.log(loading)
 
     let jobFullDescription; // jobDescription to pass to the modal 
     console.log(filterJobs, 'filterJobs')
-    
+
+    //showing the loader component if the array is empty and the loading status is true , it ensure that the API is being called.
     if (loading && filterJobs.length === 0) {
-        return(
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: "center", height: '90vh'}}>
-                <Loader/>
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '90vh' }}>
+                <Loader />
             </div>
-        ) 
+        )
     }
-    if (filterJobs.length === 0){
-        return <NoContent/>
+
+    //showing the no content component if any of the filter does not match 
+    if (filterJobs.length === 0) {
+        return <NoContent />
     }
+
+
     return (
-        <div style={{minHeight: '90vh'}}  >
-            <Grid container spacing={5} style={{ marginTop: "5px",  }}>
+        <div style={{ minHeight: '90vh' }}  >
+            <Grid container spacing={5} style={{ marginTop: "5px", }}>
                 {filterJobs.map((job, index) => {
                     let description = job.jobDetailsFromCompany
                     jobFullDescription = job.jobDetailsFromCompany
@@ -45,7 +50,7 @@ const CardComponent = () => {
                     }
                     return (
                         <Grid item xs={12} ms={4} sm={4} key={index}>
-                            <Card align='left' sx={{ maxWidth: 345 }} style={{ padding: '10px', marginBottom: '30px' , borderRadius: '20px', boxShadow: '0 8px 8px rgba(0, 0, 0, 0.2)'}}>
+                            <Card align='left' sx={{ maxWidth: 345 }} style={{ padding: '10px', marginBottom: '30px', borderRadius: '20px', boxShadow: '0 8px 8px rgba(0, 0, 0, 0.2)' }}>
                                 <CardHeader align='left'
                                     avatar={
                                         <Avatar aria-label="logo">
@@ -80,13 +85,13 @@ const CardComponent = () => {
                                         <Typography variant="body2" color="text.secondary">
                                             {description}
                                         </Typography>
-                                        <Typography  align='center' style={{color: '#651fff',  cursor: 'pointer', margin: '5px' }} onClick={handleModalOpen} variant="body2" color="text.secondary">
+                                        <Typography align='center' style={{ color: '#651fff', cursor: 'pointer', margin: '5px' }} onClick={handleModalOpen} variant="body2" color="text.secondary">
                                             {showFullDesc ? " " : 'View Details'}
                                         </Typography>
 
                                     </CardContent>
                                 </>
-                                <Typography  color="textSecondary" sx={{ fontWeight: 'light', marginLeft: '15px' }}>
+                                <Typography color="textSecondary" sx={{ fontWeight: 'light', marginLeft: '15px' }}>
                                     {job.minExp ? `Minimum Experience ${job.minExp}` : '\u00A0'}
                                 </Typography>
 
@@ -106,10 +111,11 @@ const CardComponent = () => {
                     )
                 })}
             </Grid>
-            {loading && <Loader />} 
+            {/* again showing the loader as the user scroll down to the bottom */}
+            {loading && <Loader />}
+
             {/* passing props to jobDetailsModal */}
-            <JobDetailsModal jobFullDescription={jobFullDescription} open={open} handleModalClose={handleModalClose}/>
-          
+            <JobDetailsModal jobFullDescription={jobFullDescription} open={open} handleModalClose={handleModalClose} />
         </div>
     )
 }
